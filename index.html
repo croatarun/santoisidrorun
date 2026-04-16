@@ -103,7 +103,7 @@ body.light .hero-text {
   text-decoration: none;
 }
 
-/* IMAGEM VERTICAL (1086x1448) AJUSTADA */
+/* IMAGEM VERTICAL */
 .hero-image {
   width: 100%;
   display: flex;
@@ -114,7 +114,7 @@ body.light .hero-text {
 
 .hero-image img {
   width: 100%;
-  max-width: 500px; /* evita estourar no PC */
+  max-width: 500px;
   height: auto;
   border-radius: 12px;
   object-fit: contain;
@@ -156,6 +156,18 @@ body.light .hero-text {
   background: rgba(255,255,255,0.06);
   border-radius: 10px;
   text-align: center;
+
+  /* ADICIONADO */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ADICIONADO - IMAGEM DA LOGO */
+.sponsor img {
+  max-width: 100%;
+  max-height: 60px;
+  object-fit: contain;
 }
 
 /* WHATSAPP */
@@ -209,7 +221,7 @@ body.light .hero-text {
     </a>
   </div>
 
-  <!-- IMAGEM VERTICAL -->
+  <!-- IMAGEM -->
   <div class="hero-image">
     <img src="SANTOISIDRORUN2026.png" alt="Evento corrida">
   </div>
@@ -231,7 +243,7 @@ body.light .hero-text {
     <p><strong>R$ 20 + 2kg de alimento</strong></p>
   </div>
 
-    <div class="card">
+  <div class="card">
     <h2>🎁 O que você vai receber</h2>
     <ul class="list">
       <li>✔️ Kit atleta (camisa + número)</li>
@@ -270,10 +282,12 @@ body.light .hero-text {
 <!-- PATROCINADORES -->
 <section class="section">
   <div class="card">
-    <h2>🤝 Patrocinadores</h2>
+    <h2>🤝 Patrocinadores e Parceiros</h2>
 
     <div class="sponsors">
-      <div class="sponsor">Patrocinador 1</div>
+      <div class="sponsor">
+        <img src="CROATARUN.png" alt="Parceiros">
+      </div>
       <div class="sponsor">Patrocinador 2</div>
       <div class="sponsor">Patrocinador 3</div>
     </div>
