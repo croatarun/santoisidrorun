@@ -1,143 +1,258 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
+
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador Santo Isidro Run</title>
-    <style>
-        :root { --primary: #2d5a27; --dark: #1a1a1a; }
-        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 400px; width: 100%; }
-        .preview-box { width: 100%; aspect-ratio: 9/16; background: #333; border-radius: 10px; overflow: hidden; margin-bottom: 15px; position: relative; }
-        canvas { width: 100%; height: 100%; object-fit: contain; }
-        .controls { display: grid; gap: 10px; margin-bottom: 15px; }
-        label { font-size: 11px; font-weight: bold; color: #666; }
-        input[type="range"] { width: 100%; accent-color: var(--primary); }
-        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 5px; }
-        .btn-upload { background: #000; color: #fff; }
-        .btn-download { background: var(--primary); color: #fff; }
-        .btn-share { background: #e1306c; color: #fff; display: none; } /* Cor do Instagram */
-    </style>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gerador Santo Isidro Run 2026</title>
+
+    <style>
+
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f0f2f5; padding: 20px; }
+
+        .container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 400px; width: 100%; }
+
+        .preview { width: 100%; aspect-ratio: 9/16; background: #eee; border-radius: 10px; overflow: hidden; margin: 15px 0; border: 1px solid #ccc; }
+
+        canvas { width: 100%; height: 100%; display: block; }
+
+        .controls { background: #f9f9f9; padding: 15px; border-radius: 12px; }
+
+        label { font-size: 12px; font-weight: bold; color: #666; display: block; margin-bottom: 5px; }
+
+        input[type="range"] { width: 100%; margin-bottom: 10px; accent-color: #2d5a27; }
+
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        .btn-upload { background: #000; color: #fff; }
+
+        .btn-download { background: #2d5a27; color: #fff; }
+
+        input[type="file"] { display: none; }
+
+    </style>
+
 </head>
+
 <body>
 
-<div class="card">
-    <button class="btn btn-upload" onclick="document.getElementById('inputFoto').click()">1. ESCOLHER FOTO</button>
-    <input type="file" id="inputFoto" accept="image/*" style="display:none">
 
-    <div class="preview-box">
-        <canvas id="canvas"></canvas>
-    </div>
+<div class="container">
 
-    <div class="controls">
-        <label>ZOOM</label>
-        <input type="range" id="zoom" min="0.1" max="3" step="0.01" value="1.0">
-        <label>HORIZONTAL</label>
-        <input type="range" id="posX" min="-1000" max="1000" value="0">
-        <label>VERTICAL</label>
-        <input type="range" id="posY" min="-1000" max="1000" value="0">
-    </div>
+    <button class="btn btn-upload" onclick="document.getElementById('atletaInput').click()">1. SELECIONAR FOTO</button>
 
-    <button class="btn btn-download" id="btnDownload">2. SALVAR IMAGEM</button>
-    <button class="btn btn-share" id="btnShare">COMPARTILHAR NO INSTAGRAM</button>
+    <input type="file" id="atletaInput" accept="image/*">
+
+
+    <div class="preview">
+
+        <canvas id="canvas"></canvas>
+
+    </div>
+
+
+    <div class="controls">
+
+        <label>ZOOM</label>
+
+        <input type="range" id="zoom" min="0.1" max="4" step="0.01" value="1.2">
+
+        <label>HORIZONTAL (X)</label>
+
+        <input type="range" id="posX" min="-800" max="800" value="0">
+
+        <label>VERTICAL (Y)</label>
+
+        <input type="range" id="posY" min="-800" max="800" value="0">
+
+    </div>
+
+
+    <button class="btn btn-download" id="downloadBtn">2. BAIXAR IMAGEM</button>
+
 </div>
 
+
 <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const imgMoldura = new Image();
-    const imgAtleta = new Image();
-    
-    let atletaCarregado = false;
-    const W = 1080;
-    const H = 1920;
 
-    // Ajuste aqui as coordenadas da sua área branca na moldura
-    const mascara = { x: 124, y: 231, w: 832, h: 1046, r: 105 };
+    const canvas = document.getElementById('canvas');
 
-    imgMoldura.src = 'euvou.png'; 
-    imgMoldura.onload = () => {
-        canvas.width = W;
-        canvas.height = H;
-        render();
-    };
+    const ctx = canvas.getContext('2d');
 
-    document.getElementById('inputFoto').onchange = e => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = ev => {
-                imgAtleta.onload = () => {
-                    atletaCarregado = true;
-                    // Se estiver no celular, mostra o botão de compartilhar
-                    if(navigator.share) document.getElementById('btnShare').style.display = 'block';
-                    render();
-                };
-                imgAtleta.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    const imgMoldura = new Image();
 
-    document.querySelectorAll('input').forEach(i => i.oninput = render);
+    const imgAtleta = new Image();
 
-    function render() {
-        ctx.clearRect(0, 0, W, H);
+    
 
-        // 1. DESENHAR A FOTO DO ATLETA (POR BAIXO)
-        if (atletaCarregado) {
-            ctx.save();
-            // Criar o recorte (máscara)
-            ctx.beginPath();
-            ctx.roundRect(mascara.x, mascara.y, mascara.w, mascara.h, mascara.r);
-            ctx.clip();
+    let molduraOK = false;
 
-            const z = parseFloat(document.getElementById('zoom').value);
-            const x = parseInt(document.getElementById('posX').value);
-            const y = parseInt(document.getElementById('posY').value);
+    let atletaOK = false;
 
-            const dw = imgAtleta.width * z;
-            const dh = imgAtleta.height * z;
-            const cx = mascara.x + (mascara.w / 2) + x;
-            const cy = mascara.y + (mascara.h / 2) + y;
 
-            ctx.drawImage(imgAtleta, cx - dw/2, cy - dh/2, dw, dh);
-            ctx.restore();
-        }
+    // Dimensões originais da sua imagem euvouu.jpg
 
-        // 2. DESENHAR A MOLDURA (POR CIMA)
-        // Dica: Sua imagem 'euvou.png' DEVE ter o fundo transparente no meio
-        ctx.drawImage(imgMoldura, 0, 0, W, H);
-    }
+    const W = 1080;
 
-    // FUNÇÃO DE DOWNLOAD
-    document.getElementById('btnDownload').onclick = () => {
-        if(!atletaCarregado) return alert("Selecione sua foto!");
-        const link = document.createElement('a');
-        link.download = 'santo_isidro_2026.png';
-        link.href = canvas.toDataURL('image/png', 1.0);
-        link.click();
-    };
+    const H = 1920;
 
-    // FUNÇÃO DE COMPARTILHAR (Abre o menu nativo do celular)
-    document.getElementById('btnShare').onclick = async () => {
-        const dataUrl = canvas.toDataURL('image/png');
-        const blob = await (await fetch(dataUrl)).blob();
-        const file = new File([blob], 'santo_isidro.png', { type: 'image/png' });
 
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-                await navigator.share({
-                    files: [file],
-                    title: 'Santo Isidro Run 2026',
-                    text: 'Eu vou!',
-                });
-            } catch (err) {
-                console.log("Erro ao compartilhar:", err);
-            }
-        }
-    };
+    // Área branca exata para a foto ficar presa dentro
+
+    const area = { x: 124, y: 231, w: 832, h: 1046, r: 105 };
+
+
+    // Carrega a moldura (certifique-se que o nome do arquivo está exato)
+
+    imgMoldura.src = 'euvou.png'; 
+
+    imgMoldura.onload = () => {
+
+        molduraOK = true;
+
+        canvas.width = W;
+
+        canvas.height = H;
+
+        render();
+
+    };
+
+
+    document.getElementById('atletaInput').onchange = e => {
+
+        const file = e.target.files[0];
+
+        if (file) {
+
+            const reader = new FileReader();
+
+            reader.onload = ev => {
+
+                imgAtleta.onload = () => { atletaOK = true; render(); };
+
+                imgAtleta.src = ev.target.result;
+
+            };
+
+            reader.readAsDataURL(file);
+
+        }
+
+    };
+
+
+    document.querySelectorAll('input[type=range]').forEach(i => i.oninput = render);
+
+
+    function render() {
+
+        if (!molduraOK) return;
+
+
+        ctx.clearRect(0, 0, W, H);
+
+
+        // PASSO 1: Desenhar a FOTO primeiro (com recorte para não vazar)
+
+        if (atletaOK) {
+
+            ctx.save();
+
+            // Criamos a máscara na área branca
+
+            drawRoundedRect(ctx, area.x, area.y, area.w, area.h, area.r);
+
+            ctx.clip(); // Trava a foto aqui dentro
+
+
+            const zoom = parseFloat(document.getElementById('zoom').value);
+
+            const px = parseInt(document.getElementById('posX').value);
+
+            const py = parseInt(document.getElementById('posY').value);
+
+
+            const fw = imgAtleta.width * zoom;
+
+            const fh = imgAtleta.height * zoom;
+
+            const cx = area.x + (area.w / 2) + px;
+
+            const cy = area.y + (area.h / 2) + py;
+
+
+            ctx.drawImage(imgAtleta, cx - fw/2, cy - fh/2, fw, fh);
+
+            ctx.restore();
+
+        }
+
+
+        // PASSO 2: Desenhar a MOLDURA por cima de tudo
+
+        // Como a sua imagem tem o meio branco e não transparente, 
+
+        // a foto só aparece porque desenhamos ela na camada de baixo.
+
+        ctx.globalCompositeOperation = 'destination-over'; 
+
+        ctx.drawImage(imgMoldura, 0, 0, W, H);
+
+        ctx.globalCompositeOperation = 'source-over'; // Reseta para o padrão
+
+    }
+
+
+    function drawRoundedRect(ctx, x, y, width, height, radius) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(x + radius, y);
+
+        ctx.lineTo(x + width - radius, y);
+
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+
+        ctx.lineTo(x + width, y + height - radius);
+
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+
+        ctx.lineTo(x + radius, y + height);
+
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+
+        ctx.lineTo(x, y + radius);
+
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+
+        ctx.closePath();
+
+    }
+
+
+    document.getElementById('downloadBtn').onclick = () => {
+
+        if(!atletaOK) return alert("Selecione sua foto primeiro!");
+
+        const link = document.createElement('a');
+
+        link.download = 'story_santo_isidro.png';
+
+        link.href = canvas.toDataURL('image/png', 1.0);
+
+        link.click();
+
+    };
+
 </script>
 
+
 </body>
-</html>
+
+</html> 
+Como eu deixo esse codigo mais profissional? é possivel colocar para postar direto no story do instagram? Veja o que pode melhorar. 
